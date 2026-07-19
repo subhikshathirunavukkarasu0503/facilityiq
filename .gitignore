@@ -2,6 +2,8 @@
 __pycache__/
 *.pyc
 data/lake/
+data/gemini_cache/
+data/weather_cache.json
 models/*.joblib
 mlruns/
 .pytest_cache/
