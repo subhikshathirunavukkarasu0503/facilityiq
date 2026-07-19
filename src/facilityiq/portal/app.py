@@ -76,6 +76,39 @@ h1, h2, h3, .stMarkdown p, .stMarkdown li, [data-testid="stMetricLabel"],
     border-radius: 14px;
     padding: 14px 18px;
 }
+[data-testid="stMetricValue"] {
+    font-size: 1.7rem !important;   /* keep values from truncating to "…" */
+    white-space: nowrap;
+}
+/* Tabs: inactive labels were fading into the background */
+button[data-baseweb="tab"] p,
+button[data-baseweb="tab"] {
+    color: rgba(230, 237, 243, 0.75) !important;
+}
+button[data-baseweb="tab"][aria-selected="true"] p {
+    color: #5cc8ff !important;
+    font-weight: 600;
+}
+button[data-baseweb="tab"]:hover p { color: #ffffff !important; }
+/* Buttons (main + sidebar): solid, legible */
+.stButton > button, [data-testid="stSidebar"] .stButton > button,
+[data-testid="stFormSubmitButton"] > button {
+    background: rgba(92, 200, 255, 0.16) !important;
+    border: 1px solid rgba(92, 200, 255, 0.45) !important;
+    color: #eaf6ff !important;
+}
+.stButton > button:hover,
+[data-testid="stFormSubmitButton"] > button:hover {
+    background: rgba(92, 200, 255, 0.30) !important;
+    border-color: #5cc8ff !important;
+}
+/* Radio + checkbox labels, captions, expanders */
+[data-testid="stCaptionContainer"], .stRadio label p,
+[data-testid="stExpander"] summary p {
+    color: rgba(230, 237, 243, 0.85) !important;
+}
+/* Selectbox / multiselect text */
+[data-baseweb="select"] * { color: #e6edf3 !important; }
 div[data-testid="stVerticalBlockBorderWrapper"] {
     background: rgba(255, 255, 255, 0.05);
     border-radius: 14px;
@@ -179,7 +212,8 @@ def weather_panel() -> None:
         c3.metric("Humidity", f"{w.humidity_pct:.0f} %")
         c4.metric("Feels like", f"{w.feels_like_c:.1f} °C")
         load_txt = "LOW" if cli < 0.33 else ("MODERATE" if cli < 0.66 else "HIGH")
-        c5.metric("HVAC cooling load index", f"{cli:.0%} · {load_txt}",
+        c5.metric("HVAC cooling load index", f"{cli:.0%}", delta=load_txt,
+                  delta_color="off",
                   help="Derived from live outdoor temperature + humidity vs a "
                        "24 °C indoor setpoint. High outdoor load means degraded "
                        "compressors are under maximum stress — prioritize them.")
