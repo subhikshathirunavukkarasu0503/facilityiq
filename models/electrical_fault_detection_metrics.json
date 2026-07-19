@@ -1,14 +1,14 @@
 {
   "model": "electrical_fault_detection",
   "n_test": 1944,
-  "precision": 0.6206,
+  "precision": 0.6223,
   "recall": 1.0,
-  "f1": 0.7659,
+  "f1": 0.7672,
   "roc_auc": 0.8504,
   "confusion_matrix": [
     [
-      476,
-      557
+      480,
+      553
     ],
     [
       0,
