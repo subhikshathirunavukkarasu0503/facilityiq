@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+data/lake/
+models/*.joblib
+mlruns/
+.pytest_cache/
+.coverage
+htmlcov/
+.env

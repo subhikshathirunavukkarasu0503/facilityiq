@@ -1,0 +1,14 @@
+[project]
+name = "facilityiq"
+version = "0.1.0"
+description = "Smart Facility Management Platform (RFP S4-I-18)"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-q"
+
+[tool.coverage.run]
+source = ["src/facilityiq"]
+omit = ["src/facilityiq/portal/*"]
