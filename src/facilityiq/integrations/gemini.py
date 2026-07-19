@@ -44,7 +44,15 @@ def _load_env() -> None:
 
 def api_key() -> str | None:
     _load_env()
-    return os.environ.get("GEMINI_API_KEY")
+    key = os.environ.get("GEMINI_API_KEY")
+    if key:
+        return key
+    try:  # Streamlit Cloud stores secrets in st.secrets, not the environment
+        import streamlit as st
+
+        return st.secrets.get("GEMINI_API_KEY")
+    except Exception:
+        return None
 
 
 def _call(prompt: str, timeout: float = 25.0) -> str:

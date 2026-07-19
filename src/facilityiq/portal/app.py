@@ -140,8 +140,24 @@ def role_badge(role: str) -> str:
 
 # ------------------------------------------------------------------- data --
 
+@st.cache_resource(show_spinner="First run: generating telemetry lake…")
+def ensure_data() -> bool:
+    """Cloud cold-start safety: if the lake is absent (fresh container),
+    regenerate 14 days of fleet telemetry (~15 s). Models ship in the repo."""
+    lake = Path(__file__).resolve().parents[3] / "data" / "lake"
+    if not any(lake.rglob("*.jsonl")) if lake.exists() else True:
+        from facilityiq.ingestion.sinks import LocalLakeSink
+        from facilityiq.simulators.devices import simulate_fleet
+
+        sink = LocalLakeSink(lake)
+        for msg in simulate_fleet(days=14.0):
+            sink.write(msg)
+    return True
+
+
 @st.cache_data(ttl=120, show_spinner="Scoring fleet with ML models…")
 def get_assessment() -> dict:
+    ensure_data()
     return fleet_assessment()
 
 

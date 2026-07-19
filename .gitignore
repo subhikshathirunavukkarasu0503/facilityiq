@@ -1,10 +1,9 @@
 .venv/
 __pycache__/
 *.pyc
-data/lake/
+# lake + models are committed so the cloud deployment is self-contained
 data/gemini_cache/
 data/weather_cache.json
-models/*.joblib
 mlruns/
 .pytest_cache/
 .coverage
