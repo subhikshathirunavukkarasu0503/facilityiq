@@ -27,6 +27,9 @@ SRC = Path(__file__).resolve().parents[2]
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
+from facilityiq.integrations.air_quality import (  # noqa: E402
+    aqi_band, get_air_quality, ventilation_advice,
+)
 from facilityiq.integrations.weather import cooling_load_index, get_weather  # noqa: E402
 from facilityiq.ml.features import load_domain  # noqa: E402
 from facilityiq.ml.predict import explain_prediction, fleet_assessment  # noqa: E402
@@ -149,8 +152,10 @@ def ensure_data() -> bool:
         from facilityiq.ingestion.sinks import LocalLakeSink
         from facilityiq.simulators.devices import simulate_fleet
 
+        # couple the regenerated telemetry to live Chennai weather
+        bias = get_weather().temperature_c - 30.0
         sink = LocalLakeSink(lake)
-        for msg in simulate_fleet(days=14.0):
+        for msg in simulate_fleet(days=14.0, ambient_bias_c=bias):
             sink.write(msg)
     return True
 
@@ -169,6 +174,11 @@ def get_raw(domain: str) -> pd.DataFrame:
 @st.cache_data(ttl=900, show_spinner=False)
 def get_site_weather():
     return get_weather()
+
+
+@st.cache_data(ttl=900, show_spinner=False)
+def get_site_air_quality():
+    return get_air_quality()
 
 
 # ------------------------------------------------------------ components --
@@ -234,6 +244,18 @@ def weather_panel() -> None:
                   help="Derived from live outdoor temperature + humidity vs a "
                        "24 °C indoor setpoint. High outdoor load means degraded "
                        "compressors are under maximum stress — prioritize them.")
+
+    aq = get_site_air_quality()
+    aq_src = {"live": "🛰️ live · Open-Meteo Air Quality", "cache": "🗂️ cached",
+              "fallback": "⚠️ offline fallback"}[aq.source]
+    with st.container(border=True):
+        a1, a2, a3, a4, a5 = st.columns([2, 1, 1, 1, 3])
+        a1.markdown(f"**Outdoor air quality**  \n{aq_src}")
+        a2.metric("AQI (EU)", f"{aq.aqi:.0f}", delta=aqi_band(aq.aqi),
+                  delta_color="off")
+        a3.metric("PM2.5", f"{aq.pm2_5:.0f} µg/m³")
+        a4.metric("PM10", f"{aq.pm10:.0f} µg/m³")
+        a5.markdown(f"**Ventilation recommendation**  \n{ventilation_advice(aq)}")
 
 
 # --------------------------------------------------------------- screens --

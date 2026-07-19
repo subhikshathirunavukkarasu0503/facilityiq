@@ -47,8 +47,15 @@ class BaseSimulator:
     domain = "base"
     interval_minutes = 15
 
-    def __init__(self, profile: DeviceProfile):
+    def __init__(self, profile: DeviceProfile, ambient_bias_c: float = 0.0):
+        """ambient_bias_c: offset applied to the simulated ambient baseline.
+
+        Pass (live_outdoor_temp - 30) to couple the simulation to real
+        Chennai weather (Open-Meteo) — hotter real days produce hotter
+        return-air temps and higher electrical load in the simulation.
+        """
         self.profile = profile
+        self.ambient_bias_c = ambient_bias_c
         self.rng = np.random.default_rng(profile.seed)
 
     def stream(self, start: datetime, days: float) -> Iterator[dict]:
@@ -98,7 +105,7 @@ class HVACSimulator(BaseSimulator):
         efficiency = max(0.98 - 0.45 * d + noise(0, 0.015), 0.05)
         # Healthy differential ~8-10C, collapses as efficiency drops
         differential = (8.5 + 1.5 * daily) * (0.35 + 0.65 * efficiency)
-        return_temp = 24 + 3 * daily + noise(0, 0.4)
+        return_temp = 24 + 3 * daily + 0.4 * self.ambient_bias_c + noise(0, 0.4)
         supply_temp = return_temp - differential + noise(0, 0.3)
         vibration = 1.2 + 9.0 * d**1.5 + noise(0, 0.15 + 0.6 * d)
         filter_dp = 120 + 380 * d + 20 * daily + noise(0, 8)
@@ -128,7 +135,10 @@ class EnergySimulator(BaseSimulator):
         d = self._degradation(t)
         noise = self.rng.normal
         base_load = 40.0
-        occ_load = 120.0 * self._daily(ts) if self._is_workhours(ts) else 10.0
+        # HVAC electrical demand rises with real ambient heat (~3%/°C)
+        hvac_factor = 1.0 + 0.03 * self.ambient_bias_c
+        occ_load = (120.0 * self._daily(ts) if self._is_workhours(ts)
+                    else 10.0) * max(hvac_factor, 0.5)
 
         # Fault development: intermittent load spikes and voltage sags
         spike = 0.0
@@ -164,8 +174,9 @@ class OccupancySimulator(BaseSimulator):
     interval_minutes = 30
 
     def __init__(self, profile: DeviceProfile, desk_total: int = 40,
-                 ghost_booking_rate: float = 0.25):
-        super().__init__(profile)
+                 ghost_booking_rate: float = 0.25,
+                 ambient_bias_c: float = 0.0):
+        super().__init__(profile, ambient_bias_c=ambient_bias_c)
         self.desk_total = desk_total
         self.ghost_booking_rate = ghost_booking_rate
 
@@ -238,9 +249,13 @@ def default_fleet() -> list[tuple[str, DeviceProfile]]:
     return fleet
 
 
-def simulate_fleet(days: float = 14.0, start: datetime | None = None):
-    """Yield telemetry dicts for the whole default fleet."""
+def simulate_fleet(days: float = 14.0, start: datetime | None = None,
+                   ambient_bias_c: float = 0.0):
+    """Yield telemetry dicts for the whole default fleet.
+
+    ambient_bias_c couples the simulation to live weather (see BaseSimulator).
+    """
     start = start or (datetime.now(timezone.utc) - timedelta(days=days))
     for domain, profile in default_fleet():
-        sim = SIMULATORS[domain](profile)
+        sim = SIMULATORS[domain](profile, ambient_bias_c=ambient_bias_c)
         yield from sim.stream(start, days)
