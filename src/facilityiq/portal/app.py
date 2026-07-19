@@ -30,6 +30,7 @@ if str(SRC) not in sys.path:
 from facilityiq.integrations.air_quality import (  # noqa: E402
     aqi_band, get_air_quality, ventilation_advice,
 )
+from facilityiq.integrations.melbourne_footfall import busiest, get_footfall  # noqa: E402
 from facilityiq.integrations.weather import cooling_load_index, get_weather  # noqa: E402
 from facilityiq.ml.features import load_domain  # noqa: E402
 from facilityiq.ml.predict import explain_prediction, fleet_assessment  # noqa: E402
@@ -181,6 +182,11 @@ def get_site_air_quality():
     return get_air_quality()
 
 
+@st.cache_data(ttl=900, show_spinner=False)
+def get_site_footfall():
+    return get_footfall()
+
+
 # ------------------------------------------------------------ components --
 
 def gauge(value: float, title: str, color: str) -> go.Figure:
@@ -329,6 +335,20 @@ def screen_overview(data: dict) -> None:
                 col.caption(f"efficiency {g['compressor_efficiency'].iloc[-1]:.2f}")
 
     with tab_space:
+        ff = get_site_footfall()
+        ff_src = {"live": "🛰️ live · City of Melbourne open sensors",
+                  "cache": "🗂️ cached", "fallback": "⚠️ offline fallback"}[ff.source]
+        with st.container(border=True):
+            st.markdown(f"**Live footfall — real pedestrian sensors** · {ff_src}")
+            st.caption("Minute-level counts from the City of Melbourne "
+                       "pedestrian counting system (physical sensors, free "
+                       "open-data API) — demonstrates the pipeline running on "
+                       "genuinely live occupancy telemetry.")
+            top = busiest(ff, 5)
+            cols = st.columns(len(top) or 1)
+            for col, (lid, total) in zip(cols, top):
+                col.metric(f"Sensor {lid}", f"{total}",
+                           help="pedestrians counted in the covered window")
         occ = data["occupancy"]
         if occ:
             odf = pd.DataFrame(occ)
