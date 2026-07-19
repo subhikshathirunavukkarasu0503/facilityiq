@@ -43,6 +43,7 @@ SCREEN_LABELS = {
     "overview": "🏢 Health Overview",
     "detail": "🔍 Equipment Detail",
     "maintenance": "🗓️ Maintenance Scheduling",
+    "ai": "🤖 AI Predictive Intelligence",
     "admin": "⚙️ Admin",
 }
 
@@ -452,6 +453,84 @@ def screen_maintenance(data: dict) -> None:
         st.warning("Delay pushes this asset into P1 territory.")
 
 
+def screen_ai(data: dict) -> None:
+    st.title("🤖 AI Predictive Intelligence")
+    from facilityiq.integrations.gemini import (
+        api_key, asset_narrative, weekly_summary,
+    )
+    if not api_key():
+        st.warning("GEMINI_API_KEY not configured — narratives fall back to "
+                   "templates. Add the key to `.env`.")
+
+    w = get_site_weather()
+    weather_ctx = {"outdoor_temp_c": w.temperature_c,
+                   "humidity_pct": w.humidity_pct, "condition": w.condition}
+    src_badge = {"gemini": "🤖 Gemini", "cache": "🗂️ cached Gemini",
+                 "template": "📋 template fallback"}
+
+    st.subheader("Failure predictions — all 3 AI scenarios")
+    scen1, scen2, scen3 = st.columns(3)
+    hvac = data["hvac"]
+    comp_top = max(hvac, key=lambda a: a["compressor_failure_prob"], default=None)
+    motor_top = max(hvac, key=lambda a: a["motor_degradation_prob"], default=None)
+    elec_top = max(data["energy"], key=lambda a: a["failure_probability"],
+                   default=None)
+    if comp_top:
+        scen1.plotly_chart(
+            gauge(comp_top["compressor_failure_prob"],
+                  f"HVAC compressor · {comp_top['device_id']}", "#5cc8ff"),
+            use_container_width=True, key="ai-g1")
+    if elec_top:
+        scen2.plotly_chart(
+            gauge(elec_top["failure_probability"],
+                  f"Electrical fault · {elec_top['device_id']}", "#e6a817"),
+            use_container_width=True, key="ai-g2")
+    if motor_top:
+        scen3.plotly_chart(
+            gauge(motor_top["motor_degradation_prob"],
+                  f"Motor degradation · {motor_top['device_id']}", "#b48ead"),
+            use_container_width=True, key="ai-g3")
+
+    st.subheader("Ask the AI about an asset")
+    assets = {a["device_id"]: a for a in data["hvac"] + data["energy"]}
+    pick = st.selectbox("Asset", sorted(assets), key="ai-asset")
+    a = assets[pick]
+    if st.button("🧠 Generate AI explanation"):
+        with st.spinner("Gemini analyzing model outputs…"):
+            text, source = asset_narrative(
+                a, weather=weather_ctx, fallback=explain_prediction(a))
+        st.info(text)
+        st.caption(f"Source: {src_badge[source]}")
+
+    st.subheader("Weekly facility health summary")
+    if st.button("📰 Generate weekly summary"):
+        with st.spinner("Gemini writing the weekly summary…"):
+            fallback = (
+                f"{data['fleet']['status_counts']['red']} assets critical, "
+                f"{data['fleet']['status_counts']['green']} healthy. "
+                "Review active alerts and schedule P1 work first.")
+            text, source = weekly_summary(data, fallback=fallback)
+        st.markdown(text)
+        st.caption(f"Source: {src_badge[source]}")
+
+    st.subheader("Anomaly pattern dashboard")
+    anom_rows = []
+    for e in data["energy"]:
+        for an in e.get("anomalies", []):
+            anom_rows.append({"device": e["device_id"],
+                              "window_end": an["window_end"],
+                              "score": an["score"]})
+    if anom_rows:
+        adf = pd.DataFrame(anom_rows)
+        adf["window_end"] = pd.to_datetime(adf["window_end"])
+        fig = px.scatter(adf, x="window_end", y="score", color="device",
+                         title="Detected anomalies across the energy fleet "
+                               "(Isolation Forest)")
+        st.plotly_chart(dark_fig(fig, 320), use_container_width=True)
+    else:
+        st.success("No anomalies flagged across the fleet.")
+
+
 def screen_admin(data: dict) -> None:
     st.title("⚙️ Admin")
     st.subheader("Users & roles")
@@ -534,7 +613,7 @@ def main() -> None:
         st.session_state.pop("user", None)
         st.session_state.pop("acked_alerts", None)
         st.rerun()
-    st.sidebar.caption("Gemini AI narratives + Power BI ship in Phase 2.")
+    st.sidebar.caption("Power BI dashboards + Azure deployment ship in Phase 2.")
 
     try:
         data = get_assessment()
@@ -544,7 +623,8 @@ def main() -> None:
         return
 
     {"overview": screen_overview, "detail": screen_detail,
-     "maintenance": screen_maintenance, "admin": screen_admin}[choice](data)
+     "maintenance": screen_maintenance, "ai": screen_ai,
+     "admin": screen_admin}[choice](data)
 
 
 main()

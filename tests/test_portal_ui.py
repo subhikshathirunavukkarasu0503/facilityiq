@@ -53,7 +53,8 @@ def test_manager_login_lands_on_dashboard():
     # sidebar radio exposes exactly the manager screens (formatted labels)
     options = at.sidebar.radio[0].options
     assert options == ["🏢 Health Overview", "🔍 Equipment Detail",
-                       "🗓️ Maintenance Scheduling"]
+                       "🗓️ Maintenance Scheduling",
+                       "🤖 AI Predictive Intelligence"]
 
 
 @needs_artifacts
@@ -67,7 +68,8 @@ def test_admin_sees_all_screens_and_admin_panel_renders():
     at = _login(_fresh(), "admin", "admin@123")
     assert at.sidebar.radio[0].options == [
         "🏢 Health Overview", "🔍 Equipment Detail",
-        "🗓️ Maintenance Scheduling", "⚙️ Admin"]
+        "🗓️ Maintenance Scheduling", "🤖 AI Predictive Intelligence",
+        "⚙️ Admin"]
     at.sidebar.radio[0].set_value("admin").run()
     assert not at.exception
 

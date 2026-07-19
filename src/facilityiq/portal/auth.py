@@ -33,9 +33,9 @@ class User:
 
 ROLE_SCREENS: dict[str, list[str]] = {
     "viewer": ["overview"],
-    "technician": ["overview", "detail"],
-    "manager": ["overview", "detail", "maintenance"],
-    "admin": ["overview", "detail", "maintenance", "admin"],
+    "technician": ["overview", "detail", "ai"],
+    "manager": ["overview", "detail", "maintenance", "ai"],
+    "admin": ["overview", "detail", "maintenance", "ai", "admin"],
 }
 
 ROLE_RANK = {"viewer": 0, "technician": 1, "manager": 2, "admin": 3}
