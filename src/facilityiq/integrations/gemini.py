@@ -76,30 +76,41 @@ def _call(prompt: str, timeout: float = 25.0) -> str:
 
 
 def generate(prompt: str, cache_key: str | None = None,
-             fallback: str = "") -> tuple[str, str]:
-    """Return (text, source) with source in {'gemini', 'cache', 'template'}.
+             fallback: str = "", provider: str = "auto") -> tuple[str, str]:
+    """Return (text, source); source in {'gemini','groq','cache','template'}.
 
-    cache_key: stable id for disk-caching (e.g. device + probability bucket) so
-    repeated portal reruns don't burn quota; None disables caching.
+    provider: 'auto' (Gemini, then Groq), 'gemini', or 'groq' — the portal's
+    AI screen exposes this choice (L&D condition: Groq alongside Gemini).
+    cache_key: stable id for disk-caching so repeated portal reruns don't burn
+    quota; None disables caching. Cache is per-provider.
     """
+    from . import groq_llm
+
     path = None
     if cache_key:
-        digest = hashlib.sha256(cache_key.encode()).hexdigest()[:24]
+        digest = hashlib.sha256(f"{provider}:{cache_key}".encode()) \
+            .hexdigest()[:24]
         path = _CACHE_DIR / f"{digest}.txt"
         if path.exists():
             return path.read_text(encoding="utf-8"), "cache"
-    try:
-        text = _call(prompt)
+
+    attempts = {"auto": [("gemini", _call), ("groq", groq_llm._call)],
+                "gemini": [("gemini", _call)],
+                "groq": [("groq", groq_llm._call)]}[provider]
+    for name, call in attempts:
+        try:
+            text = call(prompt)
+        except Exception:
+            continue
         if path:
             _CACHE_DIR.mkdir(parents=True, exist_ok=True)
             path.write_text(text, encoding="utf-8")
-        return text, "gemini"
-    except Exception:
-        return fallback, "template"
+        return text, name
+    return fallback, "template"
 
 
 def asset_narrative(assessment: dict, weather: dict | None = None,
-                    fallback: str = "") -> tuple[str, str]:
+                    fallback: str = "", provider: str = "auto") -> tuple[str, str]:
     """Explain one asset's prediction in plain language."""
     ctx = {k: v for k, v in assessment.items() if k != "anomalies"}
     if assessment.get("anomalies"):
@@ -115,10 +126,12 @@ def asset_narrative(assessment: dict, weather: dict | None = None,
                    "(mention only if relevant to HVAC stress).")
     bucket = round(assessment.get("failure_probability", 0) * 20) / 20
     key = f"asset:{assessment['device_id']}:{bucket}:{MODEL}"
-    return generate(prompt, cache_key=key, fallback=fallback)
+    return generate(prompt, cache_key=key, fallback=fallback,
+                    provider=provider)
 
 
-def weekly_summary(fleet_data: dict, fallback: str = "") -> tuple[str, str]:
+def weekly_summary(fleet_data: dict, fallback: str = "",
+                   provider: str = "auto") -> tuple[str, str]:
     """Fleet-wide facility health summary for the weekly report."""
     slim = {
         "fleet": fleet_data["fleet"]["status_counts"],
@@ -142,4 +155,5 @@ def weekly_summary(fleet_data: dict, fallback: str = "") -> tuple[str, str]:
     )
     key = "weekly:" + hashlib.sha256(
         json.dumps(slim, sort_keys=True, default=str).encode()).hexdigest()[:16]
-    return generate(prompt, cache_key=key, fallback=fallback)
+    return generate(prompt, cache_key=key, fallback=fallback,
+                    provider=provider)

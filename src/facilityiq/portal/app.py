@@ -516,15 +516,29 @@ def screen_ai(data: dict) -> None:
     from facilityiq.integrations.gemini import (
         api_key, asset_narrative, weekly_summary,
     )
+    from facilityiq.integrations import groq_llm
+
     if not api_key():
         st.warning("GEMINI_API_KEY not configured — narratives fall back to "
-                   "templates. Add the key to `.env`.")
+                   "Groq / templates.")
+
+    provider_label = st.radio(
+        "AI provider", ["Auto (Gemini → Groq)", "Gemini 2.5", "Groq · Llama 3.3 70B"],
+        horizontal=True,
+        help="Both providers run the same prompts over the live ML outputs. "
+             "Auto fails over Gemini → Groq → cache → template so the demo "
+             "never breaks.")
+    provider = {"Auto (Gemini → Groq)": "auto", "Gemini 2.5": "gemini",
+                "Groq · Llama 3.3 70B": "groq"}[provider_label]
+    if provider in ("groq", "auto") and not groq_llm.api_key():
+        st.caption("ℹ️ GROQ_API_KEY not set — Groq unavailable until a free "
+                   "key from console.groq.com is added to .env / secrets.")
 
     w = get_site_weather()
     weather_ctx = {"outdoor_temp_c": w.temperature_c,
                    "humidity_pct": w.humidity_pct, "condition": w.condition}
-    src_badge = {"gemini": "🤖 Gemini", "cache": "🗂️ cached Gemini",
-                 "template": "📋 template fallback"}
+    src_badge = {"gemini": "🤖 Gemini", "groq": "⚡ Groq (Llama 3.3 70B)",
+                 "cache": "🗂️ cached", "template": "📋 template fallback"}
 
     st.subheader("Failure predictions — all 3 AI scenarios")
     scen1, scen2, scen3 = st.columns(3)
@@ -556,7 +570,8 @@ def screen_ai(data: dict) -> None:
     if st.button("🧠 Generate AI explanation"):
         with st.spinner("Gemini analyzing model outputs…"):
             text, source = asset_narrative(
-                a, weather=weather_ctx, fallback=explain_prediction(a))
+                a, weather=weather_ctx, fallback=explain_prediction(a),
+                provider=provider)
         st.info(text)
         st.caption(f"Source: {src_badge[source]}")
 
@@ -567,7 +582,8 @@ def screen_ai(data: dict) -> None:
                 f"{data['fleet']['status_counts']['red']} assets critical, "
                 f"{data['fleet']['status_counts']['green']} healthy. "
                 "Review active alerts and schedule P1 work first.")
-            text, source = weekly_summary(data, fallback=fallback)
+            text, source = weekly_summary(data, fallback=fallback,
+                                          provider=provider)
         st.markdown(text)
         st.caption(f"Source: {src_badge[source]}")
 

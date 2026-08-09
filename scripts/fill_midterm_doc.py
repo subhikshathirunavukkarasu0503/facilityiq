@@ -205,13 +205,17 @@ def main() -> None:
                         run.add_break()
 
     # ---------------- Section 5 ----------------
+    import subprocess
+    commit = subprocess.run(["git", "rev-parse", "--short", "HEAD"],
+                            capture_output=True, text=True,
+                            cwd=ROOT).stdout.strip()
     t = T[10]
-    fill_row(t, 0, [REPO + "  (private — L&D: request access, or access granted "
-                    "on request within the review window)"], 1)
-    fill_row(t, 1, ["9466e4d — 19-Jul-2026"], 1)
-    fill_row(t, 2, ["N/A (portal runs locally for mid-term; Azure App Service "
-                    "deployment is a Phase 2 item pending IT-created App "
-                    "Service plan)"], 1)
+    fill_row(t, 0, [REPO + "  (public — directly verifiable by L&D)"], 1)
+    fill_row(t, 1, [f"{commit} — 19-Jul-2026 (evaluation fixes pushed post-"
+                    "review; original mid-term commit 9466e4d)"], 1)
+    fill_row(t, 2, ["https://facilityiq-subhiksha.streamlit.app  (Streamlit "
+                    "Community Cloud, free tier; Azure App Service pending "
+                    "IT-created plan)"], 1)
     fill_row(t, 3, ["N/A"], 1)
     fill_row(t, 4, ["Model metrics: " + REPO + "/tree/main/models · CI: "
                     + REPO + "/actions · Mid-term report: " + REPO
@@ -283,6 +287,12 @@ def main() -> None:
          "already enforces data quality at ingestion."),
         ("Domain (optional)", "Paid / ₹450", "☐ Yes  ☑ No  ☐ Partial", "0",
          "Optional per proposal — will not purchase."),
+        ("Groq API (L&D approval condition)", "Free tier / ₹0",
+         "☑ Yes  ☐ No  ☐ Partial", "0",
+         "Added per the L&D approval condition to include Groq alongside "
+         "Gemini: second narrative provider (llama-3.3-70b-versatile) with a "
+         "provider selector on the AI screen and automatic Gemini→Groq→"
+         "cache→template failover."),
     ]
     # ensure enough rows (template has 6 data rows)
     while len(t.rows) - 1 < len(tools):
@@ -316,6 +326,13 @@ def main() -> None:
         ("Gemini model version", "Gemini 2.5 Flash", "gemini-flash-latest "
          "alias", "Google retired 2.5 Flash for newly created API keys "
          "(mid-2026); alias tracks the current free-tier flash model."),
+        ("L&D approval condition — Groq", "Proposal listed Gemini (+ local "
+         "Ollama); L&D approval added the condition to include Groq",
+         "Groq integrated as a peer narrative provider: OpenAI-compatible "
+         "REST client, llama-3.3-70b-versatile, provider picker on Screen 4, "
+         "auto-failover Gemini→Groq→cache→template; unit tests cover the "
+         "failover routing", "Compliance with the L&D approval condition "
+         "(flagged at mid-term evaluation; resolved immediately after)."),
         ("Scope pulled forward", "Screens 3-4, auth in Weeks 11-12",
          "Role-based login (4 roles), Screens 3 & 4 with live Gemini "
          "narratives, and a live weather API (Open-Meteo) already delivered",

@@ -68,18 +68,18 @@ def _save(name: str, model, cols: list[str], metrics: dict) -> None:
         import matplotlib.pyplot as plt
 
         cm = np.array(metrics["confusion_matrix"])
-        fig, ax = plt.subplots(figsize=(4, 3.5))
+        fig, ax = plt.subplots(figsize=(7, 6))
         ax.imshow(cm, cmap="Blues")
         for (i, j), v in np.ndenumerate(cm):
-            ax.text(j, i, str(v), ha="center", va="center",
+            ax.text(j, i, str(v), ha="center", va="center", fontsize=22,
                     color="white" if v > cm.max() / 2 else "black")
-        ax.set_xticks([0, 1], ["healthy", "failure"])
-        ax.set_yticks([0, 1], ["healthy", "failure"])
-        ax.set_xlabel("predicted")
-        ax.set_ylabel("actual")
-        ax.set_title(name)
+        ax.set_xticks([0, 1], ["healthy", "failure"], fontsize=14)
+        ax.set_yticks([0, 1], ["healthy", "failure"], fontsize=14)
+        ax.set_xlabel("predicted", fontsize=14)
+        ax.set_ylabel("actual", fontsize=14)
+        ax.set_title(name, fontsize=15)
         fig.tight_layout()
-        fig.savefig(MODELS_DIR / f"{name}_confusion.png", dpi=120)
+        fig.savefig(MODELS_DIR / f"{name}_confusion.png", dpi=160)
         plt.close(fig)
     except Exception:
         pass
