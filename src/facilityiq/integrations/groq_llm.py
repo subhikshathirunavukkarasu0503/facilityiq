@@ -60,6 +60,8 @@ def _call(prompt: str, timeout: float = 25.0) -> str:
     req = Request(API_URL, data=body, headers={
         "Content-Type": "application/json",
         "Authorization": f"Bearer {key}",
+        # Groq's edge blocks urllib's default UA; identify as the app
+        "User-Agent": "FacilityIQ/1.0",
     })
     with urlopen(req, timeout=timeout) as resp:
         data = json.loads(resp.read().decode())
