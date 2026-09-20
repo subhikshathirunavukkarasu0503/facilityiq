@@ -71,7 +71,7 @@ def main():
  replace_after_heading(d,'2.1 Problem Statement (as approved)',
   'No change from Mid-Term recap. Facility teams operate reactively because available HVAC, electrical and occupancy telemetry is not converted into decisions. FacilityIQ addresses preventable failures, invisible space use, energy waste and calendar-based maintenance through integrated telemetry, ML scoring and an operational portal.')
  replace_after_heading(d,'2.2 Proposed Solution Summary (as approved)',
-  'FacilityIQ implements simulated three-domain devices, unified validation, a JSONL data lake mirrored to Azure Blob, feature pipelines, three scikit-learn models and a five-screen Streamlit portal. The direct-to-Blob path remains the working Azure fallback because corporate RBAC blocked IoT Hub, Functions and App Service provisioning. Final QA adds Great Expectations, Selenium browser journeys and Locust load testing. Three report-ready datasets were validated and used to create live Power BI Service reports for equipment health, energy consumption and space utilization.')
+  'FacilityIQ implements simulated three-domain devices, unified validation, a JSONL data lake mirrored to Azure Blob, feature pipelines, three scikit-learn models and a five-screen Streamlit portal. The direct-to-Blob path remains the working Azure fallback because Azure validation/provisioning blocked IoT Hub, Functions and App Service; no new cloud resource was created. Final QA adds Great Expectations, Selenium browser journeys and Locust load testing. Three report-ready datasets were validated and used to create live Power BI Service reports for equipment health, energy consumption and space utilization.')
  replace_after_heading(d,'2.3 Core Tools & AI Components (as approved)',
   'Azure IoT Hub, Azure Functions, Azure Blob Storage, Azure App Service; Databricks Community and MLflow; scikit-learn and PyCaret; Streamlit; Power BI Desktop; Gemini; Ollama/Llama; GitHub Actions; Pytest, Selenium and Great Expectations. Actual usage and substitutions are reconciled in Section 7. The supplied project record also includes Groq, but the official L&D feedback that allegedly required it was not supplied for independent verification.')
 
@@ -129,7 +129,7 @@ def main():
 
  # Section 5
  fillrow(T[10],0,[REPO],1); fillrow(T[10],1,[COMMIT+' — 20-Sep-2026'],1)
- fillrow(T[10],2,['https://facilityiq-subhiksha.streamlit.app — currently redirects to Streamlit authentication; local portal remains the demonstrable fallback'],1)
+ fillrow(T[10],2,['https://facilityiq-subhiksha.streamlit.app — live FacilityIQ sign-in portal; the free Streamlit app may sleep after inactivity and can be woken from its landing page. Local portal remains the fallback'],1)
  fillrow(T[10],3,[REPO+'/tree/'+COMMIT+'/docs/evidence/final'],1)
  walk=[
  ('Great Expectations telemetry quality gate','src/facilityiq/qa/data_quality.py; scripts/run_data_quality.py; tests/test_data_quality.py'),
@@ -149,7 +149,7 @@ def main():
  ('Azure IoT Hub','F1 Free / ₹0','No','0','Draft validated to final review, then Azure returned a generic Validation failed; no resource was created.'),
  ('Azure Functions','Free / ₹0','No','0','Depends on IoT Hub provisioning; not claimed.'),
  ('Azure Blob Storage','Free/low-cost','Yes','Not independently verified after Mid-Term','Direct lake fallback documented at Mid-Term.'),
- ('Azure App Service','Free / ₹0','No','0','Plan creation blocked by corporate RBAC; Streamlit fallback.'),
+ ('Azure App Service','Free / ₹0','No','0','Azure App Service provisioning was blocked; no resource was created. Streamlit fallback is live.'),
  ('Databricks + MLflow','Free','Partial','0','Local pandas/scikit-learn; MLflow retained locally.'),
  ('scikit-learn + PyCaret','Free','Partial','0','scikit-learn used; PyCaret omitted.'),
  ('Power BI Service','Free / existing organisational licence','Yes','0','Three reports and three semantic models created in My workspace from validated CSV exports.'),
@@ -166,9 +166,9 @@ def main():
  for i,r in enumerate(budgets): fillrow(T[14],i,list(r))
 
  dev=[
- ('IoT ingestion path','IoT Hub → Functions → Blob','Validated local lake → direct Azure Blob fallback; IoT client code retained','Carried from Mid-Term; corporate RBAC blocked provisioning.'),
+ ('IoT ingestion path','IoT Hub → Functions → Blob','Validated local lake → direct Azure Blob fallback; IoT client code retained','Final Azure validation/provisioning was blocked; no IoT Hub or Function resource was created.'),
  ('ML compute','Databricks + PyCaret','Local pandas/scikit-learn; local MLflow','Carried from Mid-Term; appropriate for POC volume.'),
- ('Deployment','Azure App Service','Streamlit local/cloud fallback; cloud URL currently auth-gated','Carried from Mid-Term; App Service plan blocked.'),
+ ('Deployment','Azure App Service','Live Streamlit cloud sign-in portal plus local fallback','Azure App Service provisioning remained blocked; no resource was created.'),
  ('Analytics dashboards','Power BI x3','Three live Power BI Service reports backed by validated CSV exports','Completed on 21-Sep-2026; live URLs and screenshots recorded in EV-11.'),
  ('QA completion','Great Expectations, load and E2E planned','Implemented and executed in final phase','New final-phase completion on 20-Sep-2026.')]
  for i,r in enumerate(dev,1): fillrow(T[15],i,list(r))
@@ -179,13 +179,13 @@ def main():
  ('EN-04','Automated final data-quality and load evidence','Turns final QA into repeatable scripts and machine-readable reports','Done','0','EV-07, EV-08')]
  for i,r in enumerate(enh,1): fillrow(T[16],i,list(r))
  pending=[
- ('IoT Hub + Functions live route','Corporate Azure RBAC prevented resource creation','Y','Provision in the assigned RG, set the device connection string, verify route to existing Blob container.'),
- ('Azure App Service deployment','Corporate RBAC prevented plan creation','Y','Deploy after IT provisions F1 plan; retain Streamlit as backup.'),
- ('Public cloud portal access','Current Streamlit URL redirects to Streamlit authentication','N','Change sharing settings or grant reviewer access before review.'),
+ ('IoT Hub + Functions live route','Azure validation/provisioning was blocked; no resource was created','Y','Provision in the assigned RG, set the device connection string, verify route to existing Blob container.'),
+ ('Azure App Service deployment','Azure App Service provisioning was blocked; no resource was created','Y','Deploy after IT provisions F1 plan; retain Streamlit as backup.'),
+ ('Public cloud portal availability','Free Streamlit app can sleep after inactivity','N','Wake the app before review; local portal remains the fallback.'),
  ('Official Mid-Term result/feedback and final review dates','Not supplied with project materials','N','Attach official feedback and update Section 1 before submission if available.')]
  for i,r in enumerate(pending,1): fillrow(T[17],i,list(r))
  risks=[
- ('Azure subscription validation blocks IoT Hub/App Service','Accepted','Direct-Blob and local/Streamlit fallbacks retained; the final IoT Hub attempt returned a generic validation failure and created no resource.','Core POC works; approved cloud route is incomplete.'),
+ ('Azure validation/provisioning blocks IoT Hub/App Service','Accepted','Direct-Blob and local/Streamlit fallbacks retained; the final IoT Hub attempt returned a generic validation failure and created no resource.','Core POC works; approved cloud route is incomplete.'),
  ('Model accuracy below target','Mitigated','Grouped held-out testing; final metrics retained in repository.','HVAC and motor exceed F1 target; electrical recall is 1.00.'),
  ('AI/API availability','Mitigated','Caching, provider fallback and deterministic templates.','Portal remains usable without live narrative call.'),
  ('Power BI report depth','Mitigated','Created three live reports with table visuals and retained validated source datasets.','Reports exist and are evidenced; further visual design remains optional refinement.'),
