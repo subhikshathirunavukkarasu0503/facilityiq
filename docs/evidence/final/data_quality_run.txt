@@ -1,0 +1,35 @@
+Calculating Metrics:   0%|          | 0/98 [00:00<?, ?it/s]Calculating Metrics:   0%|          | 0/98 [00:00<?, ?it/s]Calculating Metrics:   2%|▏         | 2/98 [00:00<00:00, 3615.78it/s]Calculating Metrics:   2%|▏         | 2/98 [00:00<00:00, 1653.58it/s]Calculating Metrics:   3%|▎         | 3/98 [00:00<00:00, 2252.18it/s]Calculating Metrics:   3%|▎         | 3/98 [00:00<00:00, 1635.42it/s]Calculating Metrics:  22%|██▏       | 22/98 [00:00<00:00, 1586.43it/s]Calculating Metrics:  22%|██▏       | 22/98 [00:00<00:00, 1538.58it/s]Calculating Metrics: 100%|██████████| 98/98 [00:00<00:00, 2495.88it/s]Calculating Metrics: 100%|██████████| 98/98 [00:00<00:00, 2480.52it/s]Calculating Metrics: 100%|██████████| 98/98 [00:00<00:00, 2475.63it/s]Calculating Metrics: 100%|██████████| 98/98 [00:00<00:00, 2470.60it/s]
+Calculating Metrics:   0%|          | 0/78 [00:00<?, ?it/s]Calculating Metrics:   0%|          | 0/78 [00:00<?, ?it/s]Calculating Metrics:   3%|▎         | 2/78 [00:00<00:00, 6200.01it/s]Calculating Metrics:   3%|▎         | 2/78 [00:00<00:00, 2458.56it/s]Calculating Metrics:   4%|▍         | 3/78 [00:00<00:00, 3323.54it/s]Calculating Metrics:   4%|▍         | 3/78 [00:00<00:00, 2470.63it/s]Calculating Metrics:  23%|██▎       | 18/78 [00:00<00:00, 2077.87it/s]Calculating Metrics:  23%|██▎       | 18/78 [00:00<00:00, 1988.66it/s]Calculating Metrics: 100%|██████████| 78/78 [00:00<00:00, 2818.51it/s]Calculating Metrics: 100%|██████████| 78/78 [00:00<00:00, 2792.31it/s]Calculating Metrics: 100%|██████████| 78/78 [00:00<00:00, 2780.19it/s]Calculating Metrics: 100%|██████████| 78/78 [00:00<00:00, 2771.43it/s]
+Calculating Metrics:   0%|          | 0/88 [00:00<?, ?it/s]Calculating Metrics:   0%|          | 0/88 [00:00<?, ?it/s]Calculating Metrics:   2%|▏         | 2/88 [00:00<00:00, 6548.48it/s]Calculating Metrics:   2%|▏         | 2/88 [00:00<00:00, 2728.00it/s]Calculating Metrics:   3%|▎         | 3/88 [00:00<00:00, 3683.52it/s]Calculating Metrics:   3%|▎         | 3/88 [00:00<00:00, 2574.77it/s]Calculating Metrics:  23%|██▎       | 20/88 [00:00<00:00, 2487.13it/s]Calculating Metrics:  23%|██▎       | 20/88 [00:00<00:00, 2360.40it/s]Calculating Metrics: 100%|██████████| 88/88 [00:00<00:00, 2816.15it/s]Calculating Metrics: 100%|██████████| 88/88 [00:00<00:00, 2787.46it/s]Calculating Metrics: 100%|██████████| 88/88 [00:00<00:00, 2780.30it/s]Calculating Metrics: 100%|██████████| 88/88 [00:00<00:00, 2772.74it/s]
+{
+  "files": 195,
+  "records": 14784,
+  "duplicates": 0,
+  "domains": {
+    "hvac": {
+      "domain": "hvac",
+      "records": 6720,
+      "expectations": 19,
+      "successful": 19,
+      "failed": 0,
+      "success": true
+    },
+    "energy": {
+      "domain": "energy",
+      "records": 5376,
+      "expectations": 15,
+      "successful": 15,
+      "failed": 0,
+      "success": true
+    },
+    "occupancy": {
+      "domain": "occupancy",
+      "records": 2688,
+      "expectations": 17,
+      "successful": 17,
+      "failed": 0,
+      "success": true
+    }
+  },
+  "success": true
+}

@@ -8,3 +8,4 @@ pillow>=10.0
 azure-iot-device>=2.13
 great-expectations>=0.18
 mlflow-skinny>=2.12
+locust>=2.31

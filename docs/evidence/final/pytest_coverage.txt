@@ -1,0 +1,31 @@
+...............................s.................................ss..... [ 86%]
+...........                                                              [100%]
+================================ tests coverage ================================
+_______________ coverage: platform linux, python 3.10.12-final-0 _______________
+
+Name                                                Stmts   Miss  Cover   Missing
+---------------------------------------------------------------------------------
+src/facilityiq/__init__.py                              1      0   100%
+src/facilityiq/ingestion/__init__.py                    0      0   100%
+src/facilityiq/ingestion/schema.py                     44      1    98%   64
+src/facilityiq/ingestion/sinks.py                      50     22    56%   50-58, 61-74, 77
+src/facilityiq/integrations/__init__.py                 0      0   100%
+src/facilityiq/integrations/air_quality.py             56      6    89%   45, 49, 84-85, 91-92
+src/facilityiq/integrations/gemini.py                  77     21    73%   38-42, 49, 62-75, 117, 125, 136-158
+src/facilityiq/integrations/groq_llm.py                37      7    81%   31-35, 38, 70
+src/facilityiq/integrations/melbourne_footfall.py      49      4    92%   61-62, 68-69
+src/facilityiq/integrations/weather.py                 48      2    96%   87-88
+src/facilityiq/ml/__init__.py                           0      0   100%
+src/facilityiq/ml/datasets.py                          79      0   100%
+src/facilityiq/ml/features.py                          64      4    94%   30, 40, 54, 83
+src/facilityiq/ml/predict.py                           95      9    91%   44, 47, 75, 78, 113, 118, 183-185
+src/facilityiq/ml/train_all.py                         94     10    89%   84-85, 91-94, 146-151, 155
+src/facilityiq/qa/__init__.py                           0      0   100%
+src/facilityiq/qa/data_quality.py                      83      5    94%   44-46, 55, 66
+src/facilityiq/simulators/__init__.py                   0      0   100%
+src/facilityiq/simulators/devices.py                  113      1    99%   70
+src/facilityiq/simulators/run_simulation.py            23     23     0%   7-37
+---------------------------------------------------------------------------------
+TOTAL                                                 913    115    87%
+Coverage JSON written to file docs/evidence/final/coverage.json
+80 passed, 3 skipped in 64.00s (0:01:04)
