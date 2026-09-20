@@ -1,0 +1,4 @@
+Power BI datasets exported
+data/powerbi/energy_consumption.csv: 1,348 rows x 9 columns
+data/powerbi/equipment_health.csv: 9 rows x 9 columns
+data/powerbi/space_utilization.csv: 1,344 rows x 9 columns

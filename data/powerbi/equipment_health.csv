@@ -1,0 +1,10 @@
+device_id,domain,compressor_failure_prob,motor_degradation_prob,failure_probability,status,days_to_maintenance,window_end,anomaly_now
+hvac-ahu-01,hvac,0.0,0.0,0.0,green,28.0,2026-07-19T03:17:13.870567+00:00,
+hvac-ahu-02,hvac,1.0,0.9999,1.0,red,0.0,2026-07-19T03:17:13.870567+00:00,
+hvac-chiller-01,hvac,0.0,0.0,0.0,green,28.0,2026-07-19T03:17:13.870567+00:00,
+hvac-chiller-02,hvac,1.0,0.9999,1.0,red,0.0,2026-07-19T03:17:13.870567+00:00,
+hvac-pump-01,hvac,1.0,0.9999,1.0,red,0.0,2026-07-19T03:17:13.870567+00:00,
+meter-floor1-01,energy,,,0.8548,red,4.1,2026-07-19T03:17:13.870567+00:00,True
+meter-floor2-01,energy,,,0.3,green,19.6,2026-07-19T03:17:13.870567+00:00,False
+meter-main-01,energy,,,0.5112,yellow,13.7,2026-07-19T03:17:13.870567+00:00,True
+meter-server-01,energy,,,0.8894,red,3.1,2026-07-19T03:17:13.870567+00:00,True
