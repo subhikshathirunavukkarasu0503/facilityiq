@@ -10,7 +10,7 @@ ROOT=Path(__file__).resolve().parents[1]
 TEMPLATE=Path('/downloads/file-d97a193c.docx')
 OUT=ROOT/'docs/S4-I-18_Subhiksha_Thirunavukkarasu_FinalTermDoc.docx'
 REPO='https://github.com/subhikshathirunavukkarasu0503/facilityiq'
-COMMIT='3bac9f2c5e0b956f39047f166ddbdf8275e3a62a'
+COMMIT='ae4a8b4df6493998431db7f1c29786b9c15fd6fa'
 MID='S4-I-18_Subhiksha_Thirunavukkarasu_MidTermDoc.docx'
 EVID=ROOT/'docs/evidence/final'
 
@@ -71,7 +71,7 @@ def main():
  replace_after_heading(d,'2.1 Problem Statement (as approved)',
   'No change from Mid-Term recap. Facility teams operate reactively because available HVAC, electrical and occupancy telemetry is not converted into decisions. FacilityIQ addresses preventable failures, invisible space use, energy waste and calendar-based maintenance through integrated telemetry, ML scoring and an operational portal.')
  replace_after_heading(d,'2.2 Proposed Solution Summary (as approved)',
-  'FacilityIQ implements simulated three-domain devices, unified validation, a JSONL data lake mirrored to Azure Blob, feature pipelines, three scikit-learn models and a five-screen Streamlit portal. The direct-to-Blob path remains the working Azure fallback because corporate RBAC blocked IoT Hub, Functions and App Service provisioning. Final QA adds Great Expectations, Selenium browser journeys and Locust load testing. Three Power BI reports were not completed and are disclosed in Section 10.')
+  'FacilityIQ implements simulated three-domain devices, unified validation, a JSONL data lake mirrored to Azure Blob, feature pipelines, three scikit-learn models and a five-screen Streamlit portal. The direct-to-Blob path remains the working Azure fallback because corporate RBAC blocked IoT Hub, Functions and App Service provisioning. Final QA adds Great Expectations, Selenium browser journeys and Locust load testing. Three report-ready datasets were validated and used to create live Power BI Service reports for equipment health, energy consumption and space utilization.')
  replace_after_heading(d,'2.3 Core Tools & AI Components (as approved)',
   'Azure IoT Hub, Azure Functions, Azure Blob Storage, Azure App Service; Databricks Community and MLflow; scikit-learn and PyCaret; Streamlit; Power BI Desktop; Gemini; Ollama/Llama; GitHub Actions; Pytest, Selenium and Great Expectations. Actual usage and substitutions are reconciled in Section 7. The supplied project record also includes Groq, but the official L&D feedback that allegedly required it was not supplied for independent verification.')
 
@@ -85,14 +85,14 @@ def main():
  ('D-06','Portal health overview and equipment detail','Week 9','Y','Done','EV-01–EV-03 (Mid-Term)'),
  ('D-07','Embedded unit/integration/model/UI QA and CI','Weeks 4–9','Y','Done','EV-05 (Mid-Term), EV-08'),
  ('D-08','Role-based login, maintenance and AI screens','Weeks 11–12','Y','Done','EV-01, EV-03 (Mid-Term)'),
- ('D-09','Power BI dashboards: equipment, energy and space','Week 13','N','Not Started','N/A'),
+ ('D-09','Power BI dashboards: equipment, energy and space','Week 13','N','Done','EV-11'),
  ('D-10','Scale and browser E2E validation','Week 14','N','Done','EV-08'),
  ('D-11','Great Expectations data quality and full regression','Week 15','N','Done','EV-07, EV-08'),
- ('D-12','Final documentation, evidence and review preparation','Week 16','N','Partial','EV-07–EV-09'),
+ ('D-12','Final documentation, evidence and review preparation','Week 16','N','Done','EV-07–EV-11'),
  ]
  for i,r in enumerate(rows,1): fillrow(T[1],i,list(r))
  fillrow(T[2],0,['Complete three-domain ingestion, three prediction scenarios, four portal screens, three analytics dashboards, Azure deployment, at least 10,000 telemetry points and a QA suite with at least 80% measured coverage.'],1)
- fillrow(T[2],1,['82% — core telemetry, models, portal, AI and QA are working and evidenced. Missing Power BI dashboards and the corporate-RBAC-blocked IoT Hub/Functions/App Service path prevent a 100% claim.'],1)
+ fillrow(T[2],1,['88% — core telemetry, models, portal, AI, QA and three Power BI Service reports are working and evidenced. The corporate-access-blocked IoT Hub/Functions/App Service route prevents a 100% claim.'],1)
  fillrow(T[2],2,['90% of the Week-10 checkpoint (not 90% of the full programme).'],1)
  fillrow(T[2],3,['☐ Yes, end-to-end      ☑ Yes, partially      ☐ No, recording/screenshots only'],1)
 
@@ -107,7 +107,8 @@ def main():
  ('EV-07','Great Expectations: 14,784 records, 51/51 checks, 0 duplicates','D-02, D-03, D-11',REPO+'/tree/'+COMMIT+'/docs/evidence/final','No — new'),
  ('EV-08','80-test regression, 87% coverage, Selenium 2/2, Locust 1,402 requests/0 failures','D-07, D-10, D-11',REPO+'/tree/'+COMMIT+'/docs/evidence/final','No — new'),
  ('EV-09','Final model metrics and honest completion boundary','D-04, D-05, D-12',REPO+'/tree/'+COMMIT+'/docs/evidence/final','No — new'),
- ('EV-10','Final source/evidence commit 3bac9f2','D-10–D-12',REPO+'/commit/'+COMMIT,'No — new'),
+ ('EV-10','Final source/evidence commit and Power BI datasets','D-09–D-12',REPO+'/commit/'+COMMIT,'No — new'),
+ ('EV-11','Three live Power BI Service reports and semantic models','D-09',REPO+'/tree/'+COMMIT+'/docs/evidence/final','No — new'),
  ]
  for i,r in enumerate(evidence,1): fillrow(T[3],i,list(r))
 
@@ -115,9 +116,9 @@ def main():
  blocks=[
  ('EV-07 — Final telemetry data-quality gate','Great Expectations validated every committed lake record: 195 files, 14,784 records, 0 duplicate device/timestamp pairs and 51/51 domain expectations passed.','D-02, D-03, D-11','20-Sep-2026',REPO+'/tree/'+COMMIT+'/docs/evidence/final','☑ No (new / progressed)',EVID/'ev07_data_quality.png'),
  ('EV-08 — Final regression, browser E2E and load run','80 pytest tests passed with 87% statement coverage; 2/2 Selenium journeys passed; Locust produced 1,402 requests with 25 concurrent users, 0 failures and p99 5 ms on the local Streamlit HTTP surface.','D-07, D-10, D-11','20-Sep-2026',REPO+'/tree/'+COMMIT+'/docs/evidence/final','☑ No (new / progressed)',EVID/'ev08_qa_load.png'),
- ('EV-09 — Model results and completion boundary','Confirms current held-out model metrics and explicitly separates delivered scope from corporate-RBAC-blocked cloud components and missing Power BI dashboards.','D-04, D-05, D-12','20-Sep-2026',REPO+'/tree/'+COMMIT+'/docs/evidence/final','☑ No (new / progressed)',EVID/'ev09_models_scope.png'),
- ('EV-10 — Final source and evidence commit','Commit 3bac9f2 adds the Great Expectations validator, Locust profile, Selenium journeys, tests and raw result files.','D-10–D-12','20-Sep-2026',REPO+'/commit/'+COMMIT,'☑ No (new / progressed)',None),
- ('EV-11 — Not used','No additional evidence claimed.','N/A','N/A','N/A','☑ No (not used)',None),
+ ('EV-09 — Model results and completion boundary','Confirms current held-out model metrics and explicitly separates delivered scope from cloud components blocked during the final Azure validation attempt.','D-04, D-05, D-12','20-Sep-2026',REPO+'/tree/'+COMMIT+'/docs/evidence/final','☑ No (new / progressed)',EVID/'ev09_models_scope.png'),
+ ('EV-10 — Final source, evidence and dataset commits','Commits 3bac9f2 through ae4a8b4 add the Great Expectations validator, Locust profile, Selenium journeys, tests, raw result files and three validated Power BI datasets.','D-10–D-12','20-Sep-2026',REPO+'/commit/'+COMMIT,'☑ No (new / progressed)',None),
+ ('EV-11 — Three Power BI Service reports','Live reports and semantic models were created in My workspace for Equipment Health, Energy Consumption and Space Utilization. Each report contains a real table visual built from the validated CSV export.','D-09','21-Sep-2026','Equipment: https://app.powerbi.com/groups/me/reports/ced34aee-008a-46a2-b0fa-ffb1a9b85d80?experience=power-bi ; Energy: https://app.powerbi.com/groups/me/reports/e09268d2-7f5d-4518-bab2-1fd9f39734f2?experience=power-bi ; Space: https://app.powerbi.com/groups/me/reports/388c3a7f-1caf-469b-a779-da2b1d136041?experience=power-bi','☑ No (new / progressed)',EVID/'ev11_powerbi_reports.png'),
  ('EV-12 — Not used','No additional evidence claimed.','N/A','N/A','N/A','☑ No (not used)',None),
  ]
  block_heads=[p for p in d.paragraphs if p.text.startswith('EV-') and 'replace with' in p.text]
@@ -145,13 +146,13 @@ def main():
  for i,r in enumerate(qa,1): fillrow(T[12],i,list(r))
 
  tools=[
- ('Azure IoT Hub','Free / ₹0','No','0','Creation blocked by corporate RBAC; client sink exists.'),
+ ('Azure IoT Hub','F1 Free / ₹0','No','0','Draft validated to final review, then Azure returned a generic Validation failed; no resource was created.'),
  ('Azure Functions','Free / ₹0','No','0','Depends on IoT Hub provisioning; not claimed.'),
  ('Azure Blob Storage','Free/low-cost','Yes','Not independently verified after Mid-Term','Direct lake fallback documented at Mid-Term.'),
  ('Azure App Service','Free / ₹0','No','0','Plan creation blocked by corporate RBAC; Streamlit fallback.'),
  ('Databricks + MLflow','Free','Partial','0','Local pandas/scikit-learn; MLflow retained locally.'),
  ('scikit-learn + PyCaret','Free','Partial','0','scikit-learn used; PyCaret omitted.'),
- ('Power BI Desktop','Free','No','0','Three dashboards not completed.'),
+ ('Power BI Service','Free / existing organisational licence','Yes','0','Three reports and three semantic models created in My workspace from validated CSV exports.'),
  ('Streamlit','Free','Yes','0','Five-screen portal and local QA target.'),
  ('Gemini','Free tier / ₹400 provision','Yes','0 reported','Narratives use cache/fallback.'),
  ('Ollama + Llama','Free','No','0','Not needed; retained only as planned fallback.'),
@@ -168,7 +169,7 @@ def main():
  ('IoT ingestion path','IoT Hub → Functions → Blob','Validated local lake → direct Azure Blob fallback; IoT client code retained','Carried from Mid-Term; corporate RBAC blocked provisioning.'),
  ('ML compute','Databricks + PyCaret','Local pandas/scikit-learn; local MLflow','Carried from Mid-Term; appropriate for POC volume.'),
  ('Deployment','Azure App Service','Streamlit local/cloud fallback; cloud URL currently auth-gated','Carried from Mid-Term; App Service plan blocked.'),
- ('Analytics dashboards','Power BI x3','Not completed','Disclosed, not represented as delivered.'),
+ ('Analytics dashboards','Power BI x3','Three live Power BI Service reports backed by validated CSV exports','Completed on 21-Sep-2026; live URLs and screenshots recorded in EV-11.'),
  ('QA completion','Great Expectations, load and E2E planned','Implemented and executed in final phase','New final-phase completion on 20-Sep-2026.')]
  for i,r in enumerate(dev,1): fillrow(T[15],i,list(r))
  enh=[
@@ -180,18 +181,17 @@ def main():
  pending=[
  ('IoT Hub + Functions live route','Corporate Azure RBAC prevented resource creation','Y','Provision in the assigned RG, set the device connection string, verify route to existing Blob container.'),
  ('Azure App Service deployment','Corporate RBAC prevented plan creation','Y','Deploy after IT provisions F1 plan; retain Streamlit as backup.'),
- ('Power BI dashboards x3','No PBIX files or dashboard evidence exist in the repository','Y','Build Equipment Health, Energy and Space reports from exported lake datasets.'),
  ('Public cloud portal access','Current Streamlit URL redirects to Streamlit authentication','N','Change sharing settings or grant reviewer access before review.'),
  ('Official Mid-Term result/feedback and final review dates','Not supplied with project materials','N','Attach official feedback and update Section 1 before submission if available.')]
  for i,r in enumerate(pending,1): fillrow(T[17],i,list(r))
  risks=[
- ('Corporate Azure RBAC blocks IoT Hub/App Service','Accepted','Direct-Blob and local/Streamlit fallbacks retained; blocked items disclosed.','Core POC works; approved cloud route is incomplete.'),
+ ('Azure subscription validation blocks IoT Hub/App Service','Accepted','Direct-Blob and local/Streamlit fallbacks retained; the final IoT Hub attempt returned a generic validation failure and created no resource.','Core POC works; approved cloud route is incomplete.'),
  ('Model accuracy below target','Mitigated','Grouped held-out testing; final metrics retained in repository.','HVAC and motor exceed F1 target; electrical recall is 1.00.'),
  ('AI/API availability','Mitigated','Caching, provider fallback and deterministic templates.','Portal remains usable without live narrative call.'),
- ('Dashboard gap','Realised','Disclosed rather than fabricating PBIX/dashboard evidence.','Three proposed analytics dashboards are absent.'),
+ ('Power BI report depth','Mitigated','Created three live reports with table visuals and retained validated source datasets.','Reports exist and are evidenced; further visual design remains optional refinement.'),
  ('Credential exposure in supplied spreadsheet','Realised','Key rotation and password rotation requested; secrets omitted from this document.','Owner must rotate exposed key/passwords before review.')]
  for i,r in enumerate(risks,1): fillrow(T[18],i,list(r))
- fillrow(T[19],0,['Subhiksha Thirunavukkarasu'],1); fillrow(T[19],1,['20-Sep-2026'],1)
+ fillrow(T[19],0,['Subhiksha Thirunavukkarasu'],1); fillrow(T[19],1,['21-Sep-2026'],1)
 
  # Check only statements established by this doc; leave user-dependent checks open.
  for p in d.paragraphs:
